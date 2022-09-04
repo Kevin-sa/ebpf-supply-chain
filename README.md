@@ -11,6 +11,7 @@ apt install -y bison build-essential cmake flex git libedit-dev libllvm11 llvm-1
 ```
 mysql
 redis
+supervisor
 docker
 ```
 
