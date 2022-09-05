@@ -1,0 +1,11 @@
+pymysql
+cryptography
+requests
+colorlog
+redis
+lxml
+flask
+flask_sqlalchemy
+pymysql
+aiohttp
+aiohttp
