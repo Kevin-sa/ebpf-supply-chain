@@ -9,16 +9,15 @@ class HookInfoSocket(db.Model):
     package = db.Column(db.String(255), nullable=False)
     version = db.Column(db.String(50), nullable=True, default="")
     describe = db.Column(db.Text, nullable=True, default="")
-    score = db.Column(db.String(300), nullable=True, default="")
     comm = db.Column(db.String(300), nullable=True, default="")
     d_addr = db.Column(db.String(300), nullable=True, default="")
     d_port = db.Column(db.Integer, nullable=True, default=0)
-    create_time = db.Column(db.String(300), nullable=False)
+    create_time = db.Column(db.BigInteger(), nullable=False)
 
     def insert(self, data: dict) -> int:
         mapper = HookInfoSocket(type=data.get("type", ""), package=data.get("package", ""),
                                 version=data.get("version", ""),
-                                describe=data.get("describe", ""), score=data.get("score", ""),
+                                describe=data.get("describe", ""),
                                 comm=data.get("comm", "").replace("\u0000", ""), d_addr=data.get("daddr", ""),
                                 d_port=data.get("dport", 0),
                                 create_time=int(time.time()))
@@ -52,16 +51,15 @@ class HookInfoSysOpen(db.Model):
     package = db.Column(db.String(255), nullable=False)
     version = db.Column(db.String(50), nullable=True, default="")
     describe = db.Column(db.Text, nullable=True, default="")
-    score = db.Column(db.String(300), nullable=True, default="")
     comm = db.Column(db.String(300), nullable=True, default="")
     pid = db.Column(db.BigInteger(), nullable=True, default=0)
     filename = db.Column(db.String(300), nullable=True, default="")
-    create_time = db.Column(db.String(300), nullable=False)
+    create_time = db.Column(db.BigInteger(), nullable=False)
 
     def insert(self, data: dict):
         mapper = HookInfoSysOpen(type=data.get("type", ""), package=data.get("package", ""),
                                  version=data.get("version", ""),
-                                 describe=data.get("describe", ""), score=data.get("score", ""),
+                                 describe=data.get("describe", ""),
                                  comm=data.get("comm", ""),
                                  pid=data.get("pid", 0),
                                  filename=data.get("filename", "").replace("\u0000", ""),
@@ -81,16 +79,15 @@ class HookInfoSysWrite(db.Model):
     package = db.Column(db.String(255), nullable=False)
     version = db.Column(db.String(50), nullable=True, default="")
     describe = db.Column(db.Text, nullable=True, default="")
-    score = db.Column(db.String(300), nullable=True, default="")
     comm = db.Column(db.String(300), nullable=True, default="")
     pid = db.Column(db.BigInteger(), nullable=True, default=0)
     filename = db.Column(db.String(300), nullable=True, default="")
-    create_time = db.Column(db.String(300), nullable=False)
+    create_time = db.Column(db.BigInteger(), nullable=False)
 
     def insert(self, data: dict):
         mapper = HookInfoSysWrite(type=data.get("type", ""), package=data.get("package", ""),
                                  version=data.get("version", ""),
-                                 describe=data.get("describe", ""), score=data.get("score", ""),
+                                 describe=data.get("describe", ""),
                                  comm=data.get("comm", ""), 
                                  pid=data.get("pid", 0),
                                  filename=data.get("filename", "").replace("\u0000", ""),
@@ -113,7 +110,7 @@ class HookInfoSysExec(db.Model):
     comm = db.Column(db.String(300), nullable=True, default="")
     pid = db.Column(db.BigInteger(), nullable=True, default=0)
     filename = db.Column(db.String(300), nullable=True, default="")
-    create_time = db.Column(db.String(300), nullable=False)
+    create_time = db.Column(db.BigInteger(), nullable=False)
 
     def insert(self, data: dict):
         mapper = HookInfoSysExec(type=data.get("type", ""), package=data.get("package", ""),

@@ -14,6 +14,37 @@ redis
 supervisor
 docker
 ```
+- supervisor
+```
+server API服务
+[program:ebpf-supply-chain-server]
+user=kevinsa
+command=/home/kevinsa/go/src/github.com/kevinsa/ebpf-supply-chain-server/venv/bin/python /home/kevinsa/go/src/github.com/kevinsa/ebpf-supply-chain-server/server.py
+stderr_logfile=/var/log/supervisor/ebpf_server_stderr.log
+stdout_logfile=/var/log/supervisor/ebpf_server_stdout.log
+logfile_maxbytes=10MB
+logfile_backups=10
+autostart=true
+startretries=15
+
+
+runner 告警服务
+[program:ebpf-supply-chain-runner]
+user=kevinsa
+command=/home/kevinsa/go/src/github.com/kevinsa/ebpf-supply-chain-server/venv/bin/python /home/kevinsa/go/src/github.com/kevinsa/ebpf-supply-chain-server/runner.py
+stderr_logfile=/var/log/supervisor/ebpf_runner_stderr.log
+stdout_logfile=/var/log/supervisor/ebpf_runner_stdout.log
+logfile_maxbytes=10MB
+logfile_backups=10
+autostart=true
+startretries=15
+```
+
+- 拉取package定时任务
+```
+crontab
+0 */6 * * * /bin/bash /home/kevinsa/go/src/github.com/kevinsa/ebpf-supply-chain-server/main.sh
+```
 
 ### 1.2 ebpf-supply-chain
 ebpf采集hook信息、并上报到server端

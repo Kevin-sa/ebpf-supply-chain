@@ -11,10 +11,10 @@ class EvilResult(db.Model):
     version = db.Column(db.String(50), nullable=True, default="")
     describe = db.Column(db.Text, nullable=True, default="")
     rule_name = db.Column(db.Text, nullable=True, default="")
-    score = db.Column(db.String(300), nullable=True, default="")
+    score = db.Column(db.Integer, nullable=True, default="")
     hash = db.Column(db.String(300), nullable=True, default="")
     status = db.Column(db.Integer, nullable=True, default=0)
-    create_time = db.Column(db.String(300), nullable=False)
+    create_time = db.Column(db.BigInteger(), nullable=False)
 
     def insert(self, data: dict) -> int:
         mapper = EvilResult(hook_type=data.get("hook_type", ""),
