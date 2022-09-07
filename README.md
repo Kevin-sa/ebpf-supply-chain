@@ -195,6 +195,7 @@ int kprobe_do_sys_openat2(struct pt_regs *ctx)
 - server中的runner.py判责逻辑只做简单黑白名单规则，没有根据多hook信息中pid做关联、聚合等逻辑
 
 ## 参考1-效果
+[部分样本](https://github.com/Kevin-sa/ebpf-supply-chain/tree/master/small_sample)  
 以检测到的部分恶意pypi包为例
 ### 175.24.100.2
 比较出名的“175.24.100.2”恶意包

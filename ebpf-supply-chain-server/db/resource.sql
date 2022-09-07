@@ -68,7 +68,7 @@ CREATE TABLE `supply_chain_evil_result`
     `package`     varchar(255) NOT NULL DEFAULT '0' COMMENT '',
     `version`     varchar(255) NOT NULL DEFAULT '0' COMMENT '',
     `describe`    varchar(255) NOT NULL DEFAULT '0' COMMENT '',
-    `score`       tinyint(3) NOT NULL DEFAULT '0' COMMENT '',
+    `score`       tinyint(3) NOT NULL DEFAULT 0 COMMENT '',
     `hash`        varchar(255) NOT NULL DEFAULT '0' COMMENT '',
     `status`      tinyint(1) NOT NULL DEFAULT 0 COMMENT '告警状态 0：未处理，1：确认 2：误报',
     `create_time` bigint(20) NOT NULL DEFAULT 0 COMMENT '',

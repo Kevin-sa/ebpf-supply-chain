@@ -40,8 +40,8 @@ def sys_open_hook_info_record():
     comm = data.get("comm", "").replace("\u0000", "")
     if comm not in comm_black_list and data.get("package", "") != "":
         data["comm"] = comm
-        hook_info_mapper.HookInfoSysOpen().insert(data)
-        # HookInfoCache().sys_open_hook_info_cache(data)
+        # hook_info_mapper.HookInfoSysOpen().insert(data)
+        HookInfoCache().sys_open_hook_info_cache(data)
     return {
         "result": 1,
         "error_msg": "success"
@@ -61,8 +61,8 @@ def sys_write_hook_info_record():
     comm = data.get("comm", "").replace("\u0000", "")
     if comm not in comm_black_list and data.get("package", "") != "":
         data["comm"] = comm
-        hook_info_mapper.HookInfoSysWrite().insert(data)
-        # HookInfoCache().sys_write_hook_info_cache(data)
+        # hook_info_mapper.HookInfoSysWrite().insert(data)
+        HookInfoCache().sys_write_hook_info_cache(data)
     return {
         "result": 1,
         "error_msg": "success"
