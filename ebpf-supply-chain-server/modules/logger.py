@@ -12,7 +12,7 @@ class Logger(logging.Logger):
     def __init__(self) -> None:
         worker_dir = os.getcwd()
         
-        logger_file = "/home/kevinsa/go/src/github.com/kevinsa/ebpf-supply-chain-server/log/supply-chain-check.log"
+        logger_file = "/home/kevinsa/go/src/github.com/ebpf-supply-chain-server/log/supply-chain-check.log"
         logging.Logger.__init__(self, logger_file)
         try:
             os.makedirs(os.path.dirname(logger_file))

@@ -5,10 +5,8 @@ from modules.logger import logger
 from rule.socket_black_address_rule import ScoketBlackAddressRule
 from rule.socket_black_port_rule import ScoketBlackPortRule
 from rule.socket_address_rare_rule import ScoketAddressRareRule
+from rule.sys_open_file_black_rule import SysOpenFileBlackRule
 from rule.exec_black_rule import ExecBlackRule
-from database.mapper import hook_info_mapper
-
-import os
 
 def main():
     """
@@ -17,7 +15,7 @@ def main():
     todo: thread_pool 处理
     """
     # thread_pool = ThreadPoolExecutor(10)
-    rule_service = [ScoketBlackAddressRule, ScoketBlackPortRule, ScoketAddressRareRule, ExecBlackRule]
+    rule_service = [ScoketBlackAddressRule, ScoketBlackPortRule, ScoketAddressRareRule, ExecBlackRule, SysOpenFileBlackRule]
 
     hook_info_cache = HookInfoCache()
 

@@ -6,17 +6,17 @@ from database.mapper import evil_result_mapper
 from modules.utils import get_md5
 
 
-class ScoketBlackAddressRule(RuleExecute):
+class SysOpenFileBlackRule(RuleExecute):
     """
-    根据IP地址黑名单判责
+    根据sys_open的filename黑名单判责
     """
 
     def __init__(self):
         super().__init__()
-        self.target_hook_info_type = "SOCKET"
-        self.rule_name = "socket_black_address"
-        self.score = 100
-        self.black_address_list = ["175.24.100.2", "101.32.99.28", "175.24.100.2"]
+        self.target_hook_info_type = "SYSOPEN"
+        self.rule_name = "sys_open_file_black"
+        self.score = 180
+        self.filename_black_list = ["/etc/passwd"]
 
     def do_business(self, package_name: str) -> None:
         try:
@@ -27,14 +27,14 @@ class ScoketBlackAddressRule(RuleExecute):
                 return
             self.logger.info(f"{self.rule_name} result size:{len(results)}")
             for result in results:
-                self.logger.info(f"{self.rule_name} result port:{result.get('daddr', '')}")
-                if result.get("daddr", "") in self.black_address_list:
+                self.logger.info(f"{self.rule_name} result ip:{result.get('daddr', '')} port:{result.get('dport', '')}")
+                if result.get("filename", "") in self.filename_black_list:
                     if evil_result_mapper.EvilResult().query_count_by_hash(get_md5(data=json.dumps(result))) > 0:
                         continue
-                    result_id = hook_info_mapper.HookInfoSocket().query_id_by_hook_info(package=package_name, version=result.get("version", ""),
-                                                                                        d_addr=result.get("daddr", ""), d_port=result.get("dport", 0))
+                    result_id = hook_info_mapper.HookInfoSysOpen().query_id_by_hook_info(package=package_name, version=result.get("version", ""),
+                                                                                        filename=result.get("filename", ""), pid=result.get("pid", 0))
                     if result_id is None:                                                                    
-                        result_id = hook_info_mapper.HookInfoSocket().insert(result)
+                        result_id = hook_info_mapper.HookInfoSysOpen().insert(result)
                     evil_result_mapper.EvilResult().insert(data=self.transform(data=result, result_id=result_id))
         except Exception as e:
             self.logger.error(f"do_business error:{e}")
