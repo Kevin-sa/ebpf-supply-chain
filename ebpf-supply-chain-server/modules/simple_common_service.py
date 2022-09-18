@@ -17,7 +17,7 @@ class SimpleCommonService(object):
         self.redis_task_execute_history = "TASK:EXECUTE:HISTORY"
 
     def get_simple_list(self, simple_url: str) -> object:
-        resp = requests.get(simple_url, timeout=5)
+        resp = requests.get(simple_url)
         if (resp.status_code != 200):
             self.logger.error(f"mirror:{simple_url} request error:{resp.status_code}")
             return None
@@ -40,6 +40,9 @@ class SimpleCommonService(object):
             return
         root = etree.HTML(simple_html)
         node = root.xpath("//a")
+        
+        if is_reverse:
+            node = node[::-1]
 
         for i in node:
             logger.info(f"simple_type:{simple_type} package:{i.text}")
