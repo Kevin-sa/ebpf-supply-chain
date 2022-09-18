@@ -17,13 +17,13 @@ class SimpleCommonService(object):
         self.redis_task_execute_history = "TASK:EXECUTE:HISTORY"
 
     def get_simple_list(self, simple_url: str) -> object:
-        resp = requests.get(simple_url)
+        resp = requests.get(simple_url, timeout=5)
         if (resp.status_code != 200):
             self.logger.error(f"mirror:{simple_url} request error:{resp.status_code}")
             return None
         return resp.text
 
-    def do_business(self, simple_html: object, simple_type: str, simple_url: str):
+    def do_business(self, simple_html: object, simple_type: str, simple_url: str, is_reverse: bool):
         """
         1、判断是否存在key
         2、存在更新key value写入mirror
@@ -46,7 +46,8 @@ class SimpleCommonService(object):
             value = self.redis.get_key_value(key=f"{self.redis_key}{i.text}")
             data = {"type": simple_type, "url": simple_url, "create_time": time.time()}
             if value is None:
-                max_version = get_package_version(url=simple_url, package_name=i.text, is_download=is_download)
+                max_version = get_package_version(url=simple_url, package_name=i.text, is_download=is_download,
+                                                  is_reverse=is_reverse)
                 data["version"] = max_version
                 self.redis.sadd_set(key=self.redis_task_set_key, value=i.text)
                 value = {"data": [data], "type_list": [simple_type]}
