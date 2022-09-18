@@ -16,7 +16,7 @@ class SysOpenFileBlackRule(RuleExecute):
         self.target_hook_info_type = "SYSOPEN"
         self.rule_name = "sys_open_file_black"
         self.score = 180
-        self.filename_black_list = ["/etc/passwd"]
+        self.filename_black_list = ["/etc/passwd", "/etc/hosts", "/.dockerenv", "/root/.wget-hsts", "/var/lib/docker/containers/container-id/config.v2.json"]
 
     def do_business(self, package_name: str) -> None:
         try:
