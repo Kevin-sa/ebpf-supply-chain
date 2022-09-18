@@ -57,5 +57,5 @@ class SimpleCommonService(object):
             #         data["version"] = max_version
             #         value["data"].append(data)
             #         value["type_list"].append(simple_type)
-            self.redis.set_key_value(key=f"{self.redis_key}{i.text}", value=json.dumps(value), ex=60 * 60 * 24 * 2)
-        self.redis.set_key_value(key=self.redis_task_execute_history, value=str(time.time()), ex=60 * 60 * 24)
+            self.redis.set_key_value(key=f"{self.redis_key}{i.text}", value=json.dumps(value))
+        self.redis.set_key_value(key=self.redis_task_execute_history, value=str(time.time()))
