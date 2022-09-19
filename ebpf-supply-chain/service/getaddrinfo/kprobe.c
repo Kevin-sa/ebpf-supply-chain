@@ -23,7 +23,7 @@ struct {
 
 struct event *unused __attribute__((unused));
 
-SEC("uretprobe/getaddrinfo")
+SEC("uprobe/getaddrinfo")
 int getaddrinfo_return(struct pt_regs *ctx)
 {   
     struct event event = {};

@@ -2,7 +2,7 @@
 //go:build 386 || amd64
 // +build 386 amd64
 
-package main
+package getaddrinfo
 
 import (
 	"bytes"

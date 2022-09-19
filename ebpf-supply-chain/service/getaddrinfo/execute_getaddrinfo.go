@@ -5,7 +5,7 @@
 // The eBPF program will be attached to the start of the sys_execve
 // kernel function and prints out the number of times it has been called
 // every second.
-package main
+package getaddrinfo
 
 import (
 	"bytes"
@@ -15,15 +15,17 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+
 	"github.com/cilium/ebpf/link"
-	"github.com/cilium/ebpf/rlimit"
 	"github.com/cilium/ebpf/perf"
+	"github.com/cilium/ebpf/rlimit"
+	"github.com/kevinsa/ebpf-supply-chain/utils"
 )
 
 // $BPF_CLANG and $BPF_CFLAGS are set by the Makefile.
+//
 //go:generate go run github.com/cilium/ebpf/cmd/bpf2go -cc $BPF_CLANG -cflags $BPF_CFLAGS --target=amd64 -type event bpf kprobe.c -- -I../headers
 const mapKey uint32 = 0
-
 
 const (
 	// The path to the ELF binary containing the function to trace.
@@ -35,7 +37,7 @@ const (
 	symbol  = "getaddrinfo"
 )
 
-func main() {
+func Execute() {
 	stopper := make(chan os.Signal, 1)
 	signal.Notify(stopper, os.Interrupt, syscall.SIGTERM)
 
@@ -59,7 +61,7 @@ func main() {
 
 	// Open a Uretprobe at the exit point of the symbol and attach
 	// the pre-compiled eBPF program to it.
-	up, err := ex.Uretprobe(symbol, objs.GetaddrinfoReturn, nil)
+	up, err := ex.Uprobe(symbol, objs.GetaddrinfoReturn, nil)
 	if err != nil {
 		log.Fatalf("creating uretprobe: %s", err)
 	}
@@ -108,30 +110,7 @@ func main() {
 			log.Printf("parsing perf event: %s", err)
 			continue
 		}
-
-		// log.Printf("%s:%s return value: %d - %s", binPath, symbol, event.Pid, B2S(event.Comm))
-		log.Printf("%s:%s return value:%d -  %16s - %80s", binPath, symbol, event.Pid, event.Comm, event.Host,)
+		utils.PostHookInfo(utils.CommBytes2S(event.Comm), utils.B2SHost(event.Host), event.Pid)
+		// log.Printf("%s:%s return value:%d -  %16s - %80s", binPath, symbol, event.Pid, event.Comm, event.Host)
 	}
-}
-
-func B2S(bs [16]uint8) string {
-	ba := []byte{}
-	for _, b := range bs {
-		if b == 0 {
-			continue
-		}
-		ba = append(ba, byte(b))
-	}
-	return string(ba)
-}
-
-func B2SFilename(bs [80]int8) string {
-	ba := []byte{}
-	for _, b := range bs {
-		if b == 0 {
-			continue
-		}
-		ba = append(ba, byte(b))
-	}
-	return string(ba)
 }
