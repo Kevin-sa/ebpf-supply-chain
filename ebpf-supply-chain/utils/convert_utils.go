@@ -1,6 +1,5 @@
 package utils
 
-
 func CommBytes2S(bs [16]uint8) string {
 	ba := []byte{}
 	for _, b := range bs {
@@ -44,6 +43,17 @@ func FilenameBytes2S(bs [100]uint8) string {
 	for _, b := range bs {
 		if b == 0 {
 			continue
+		}
+		ba = append(ba, byte(b))
+	}
+	return string(ba)
+}
+
+func B2SHost(bs [80]uint8) string {
+	ba := []byte{}
+	for _, b := range bs {
+		if b == 0 {
+			break
 		}
 		ba = append(ba, byte(b))
 	}

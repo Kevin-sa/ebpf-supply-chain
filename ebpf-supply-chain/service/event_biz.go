@@ -1,6 +1,6 @@
 package service
 
-import 	"github.com/kevinsa/ebpf-supply-chain/service/biz"
+import "github.com/kevinsa/ebpf-supply-chain/service/biz"
 
 type BizProbe struct {
 	EventModules

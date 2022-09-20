@@ -59,6 +59,22 @@ CREATE TABLE `supply_chain_hook_info_sys_exec`
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 
+CREATE TABLE `supply_chain_hook_info_dns`
+(
+    `id`          bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `type`        varchar(255) NOT NULL DEFAULT '0' COMMENT '',
+    `package`     varchar(255) NOT NULL DEFAULT '0' COMMENT '',
+    `version`     varchar(255) NOT NULL DEFAULT '0' COMMENT '',
+    `describe`    varchar(255) NOT NULL DEFAULT '0' COMMENT '',
+    `comm`        varchar(255) NOT NULL DEFAULT '0' COMMENT '',
+    `pid`         bigint(20) NOT NULL DEFAULT 0 COMMENT '',
+    `host`    varchar(255) NOT NULL DEFAULT '0' COMMENT '',
+    `status`      tinyint(1) NOT NULL DEFAULT 0 COMMENT '处理状态 0:未处理 1：已处理',
+    `create_time` bigint(20) NOT NULL DEFAULT 0 COMMENT '',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+
 CREATE TABLE `supply_chain_evil_result`
 (
     `id`          bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',

@@ -1,6 +1,6 @@
 package service
 
-import 	"github.com/kevinsa/ebpf-supply-chain/service/sysexec"
+import "github.com/kevinsa/ebpf-supply-chain/service/sysexec"
 
 type SysExecProbe struct {
 	EventModules
