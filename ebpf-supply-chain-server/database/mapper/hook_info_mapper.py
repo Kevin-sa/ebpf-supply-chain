@@ -135,7 +135,48 @@ class HookInfoSysExec(db.Model):
                                     HookInfoSysExec.filename==hook_info.get("filename", ""),
                                     HookInfoSysExec.create_time==hook_info.get("create_time", 0)
                                     ).first()
-        print(mapper)
+        db.session.close()
+        if mapper is None:
+            return None
+        return mapper.id
+
+
+
+class HookInfoDns(db.Model):
+    __tablename__ = 'supply_chain_hook_info_dns'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    type = db.Column(db.String(255), nullable=True, default="pypi")
+    package = db.Column(db.String(255), nullable=False)
+    version = db.Column(db.String(50), nullable=True, default="")
+    describe = db.Column(db.Text, nullable=True, default="")
+    comm = db.Column(db.String(300), nullable=True, default="")
+    pid = db.Column(db.BigInteger(), nullable=True, default=0)
+    host = db.Column(db.String(300), nullable=True, default="")
+    create_time = db.Column(db.BigInteger(), nullable=False)
+
+    def insert(self, data: dict):
+        mapper = HookInfoDns(type=data.get("type", ""), package=data.get("package", ""),
+                                 version=data.get("version", ""),
+                                 describe=data.get("describe", ""),
+                                 comm=data.get("comm", ""), 
+                                 pid=data.get("pid", 0),
+                                 host=data.get("host", ""),
+                                 create_time=int(time.time()))
+        db.session.add(mapper)
+        db.session.flush()
+        db.session.commit()
+        id = mapper.id
+        db.session.close()
+        return id
+
+    def query_id_by_hook_info(self, hook_info: dict) -> int:
+        mapper = db.session.query(HookInfoDns).filter(HookInfoDns.package==hook_info.get("package", ""),
+                                    HookInfoDns.version==hook_info.get("version", ""),
+                                    HookInfoDns.comm==hook_info.get("comm", ""),
+                                    HookInfoDns.pid==hook_info.get("pid", 0),
+                                    HookInfoDns.filename==hook_info.get("host", ""),
+                                    HookInfoDns.create_time==hook_info.get("create_time", 0)
+                                    ).first()
         db.session.close()
         if mapper is None:
             return None

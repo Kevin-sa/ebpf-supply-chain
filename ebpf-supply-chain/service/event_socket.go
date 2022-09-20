@@ -1,6 +1,6 @@
 package service
 
-import 	"github.com/kevinsa/ebpf-supply-chain/service/socket"
+import "github.com/kevinsa/ebpf-supply-chain/service/socket"
 
 type SocketProbe struct {
 	EventModules

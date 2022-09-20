@@ -1,6 +1,6 @@
 package service
 
-import 	"github.com/kevinsa/ebpf-supply-chain/service/sysopen"
+import "github.com/kevinsa/ebpf-supply-chain/service/sysopen"
 
 type SysopenProbe struct {
 	EventModules

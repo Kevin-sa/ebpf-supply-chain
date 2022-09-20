@@ -87,6 +87,26 @@ def sys_exec_hook_info_record():
         "error_msg": "success"
     }
 
+@app.route("/hook/dns", methods=['POST'])
+def dns_hook_info_record():
+    """
+    结果体
+    {"type": "PYPI", "package": "requests", "version": 1.0, "describe": "", "score": "execute", "comm": "pypi", "filename": ""}
+    :return:
+    """
+    data = request.get_json()
+    print(data)
+    comm_black_list = ["NetworkManager", "node"]
+    hsot_black_list = ["127.0.0.1", "172.17.0.1"]
+    if  data.get("package", "") != "" and data.get("comm") not in comm_black_list and data.get("host") not in hsot_black_list:
+        hook_info_mapper.HookInfoDns().insert(data)
+        HookInfoCache().dns_hook_info_cache(data)
+
+    return {
+        "result": 1,
+        "error_msg": "success"
+    }
+
 
 @app.route("/task/pypi", methods=['GET'])
 def get_pypi_task_info():

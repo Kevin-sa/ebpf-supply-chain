@@ -110,7 +110,7 @@ func Execute() {
 			log.Printf("parsing perf event: %s", err)
 			continue
 		}
-		utils.PostHookInfo(utils.CommBytes2S(event.Comm), utils.B2SHost(event.Host), event.Pid)
+		utils.PostDnsHookInfo(utils.CommBytes2S(event.Comm), utils.B2SHost(event.Host), event.Pid)
 		// log.Printf("%s:%s return value:%d -  %16s - %80s", binPath, symbol, event.Pid, event.Comm, event.Host)
 	}
 }

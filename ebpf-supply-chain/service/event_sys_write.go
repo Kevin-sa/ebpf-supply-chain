@@ -1,6 +1,6 @@
 package service
 
-import 	"github.com/kevinsa/ebpf-supply-chain/service/syswrite"
+import "github.com/kevinsa/ebpf-supply-chain/service/syswrite"
 
 type SysWriteProbe struct {
 	EventModules

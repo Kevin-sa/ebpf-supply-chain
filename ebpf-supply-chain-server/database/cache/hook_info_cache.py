@@ -69,6 +69,14 @@ class HookInfoCache(object):
         except Exception as e:
             self.logger.error(f"sys_write_hook_info_cache error:{e}")
 
+
+    def dns_hook_info_cache(self, data: dict) -> None:
+        try:
+            package_name = data.get("package", "")
+            self.comm_hook_info_cache(data=data, type="DNS", package_name=package_name)
+        except Exception as e:
+            self.logger.error(f"sys_write_hook_info_cache error:{e}")
+
     def comm_hook_info_cache(self, data: dict, type: str, package_name: str) -> None:
         try:
             self.redis.zset_add(key=self.hook_info_zset_key_prefix,

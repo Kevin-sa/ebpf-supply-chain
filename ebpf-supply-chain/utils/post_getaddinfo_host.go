@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/kevinsa/ebpf-supply-chain/global"
 )
@@ -21,11 +20,7 @@ type DnsHookInfoReq struct {
 	Host     string `json:"host"`
 }
 
-func getEnv(envName string) string {
-	return os.Getenv(envName)
-}
-
-func PostHookInfo(comm string, host string, pid uint32) {
+func PostDnsHookInfo(comm string, host string, pid uint32) {
 
 	dnsHookInfoReq := DnsHookInfoReq{
 		Type:     "dns",
