@@ -195,7 +195,7 @@ int kprobe_do_sys_openat2(struct pt_regs *ctx)
 - server中main.py获取新增pypi package中应修改为threading+asyncio方式，且目前仅获取新增package未判断version粒度变化
 - server中的runner.py判责逻辑只做简单黑白名单规则，没有根据多hook信息中pid做关联、聚合等逻辑
 
-## feature
+## 0x04 feature
 ### dns hook
 通过hook```getaddrinfo```函数可以获取通过curl/wget等方式的dns查询，但是无法获取nslook不通过getaddrinfo函数的数据
 相关恶意包case  
