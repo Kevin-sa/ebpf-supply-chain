@@ -4,19 +4,19 @@ from rule.impl.rule_execute import RuleExecute
 from database.mapper import hook_info_mapper
 from database.mapper import evil_result_mapper
 from modules.utils import get_md5
+import re
 
-
-class SysOpenFileBlackRule(RuleExecute):
+class DnsBlackRule(RuleExecute):
     """
-    根据sys_open的filename黑名单判责
+    根据IP地址黑名单判责
     """
 
     def __init__(self):
         super().__init__()
-        self.target_hook_info_type = "SYSOPEN"
-        self.rule_name = "sys_open_file_black"
-        self.score = 180
-        self.filename_black_list = ["/etc/passwd", "/etc/hosts", "/.dockerenv", "/root/.wget-hsts", "/var/lib/docker/containers/container-id/config.v2.json"]
+        self.target_hook_info_type = "DNS"
+        self.rule_name = "dns_black_rule"
+        self.score = 100
+        self.dns_hook_black_pattern = re.compile(".lol.0day-security.com")
 
     def do_business(self, package_name: str) -> None:
         try:
@@ -25,19 +25,26 @@ class SysOpenFileBlackRule(RuleExecute):
                 key=f"{self.hook_info_record_key_prefix}{self.target_hook_info_type}:{package_name}")
             if results is None:
                 return
-            self.logger.info(f"{self.rule_name} result size:{len(results)}")
+            self.logger.info(f"{self.rule_name} packag:{package_name} result size:{len(results)}")
             for result in results:
-                if result.get("filename", "") in self.filename_black_list:
+                if self.__dns_host_black_list(result):
                     self.logger.info(f"{self.rule_name} packag:{package_name} hit rule")
                     if evil_result_mapper.EvilResult().query_count_by_hash(get_md5(data=json.dumps(result))) > 0:
                         continue
-                    result_id = hook_info_mapper.HookInfoSysOpen().query_id_by_hook_info(package=package_name, version=result.get("version", ""),
-                                                                                        filename=result.get("filename", ""), pid=result.get("pid", 0))
+                    result_id = hook_info_mapper.HookInfoDns().query_id_by_hook_info(result)
                     if result_id is None:                                                                    
-                        result_id = hook_info_mapper.HookInfoSysOpen().insert(result)
+                        result_id = hook_info_mapper.HookInfoSysExec().insert(result)
                     evil_result_mapper.EvilResult().insert(data=self.transform(data=result, result_id=result_id))
         except Exception as e:
             self.logger.error(f"do_business error:{e}")
+
+    def __dns_host_black_list(self, result: dict) -> bool:
+        if result.get("comm", None) is None or result.get("host", None) is None:
+                return False
+        host = result.get("host", "")
+        if self.dns_hook_black_pattern.search(result.get("host", "")):
+            return True
+        return False
 
     def transform(self, data: dict, result_id: int) -> dict:
         return {

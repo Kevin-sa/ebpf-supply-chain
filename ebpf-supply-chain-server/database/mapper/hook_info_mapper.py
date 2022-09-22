@@ -174,7 +174,7 @@ class HookInfoDns(db.Model):
                                     HookInfoDns.version==hook_info.get("version", ""),
                                     HookInfoDns.comm==hook_info.get("comm", ""),
                                     HookInfoDns.pid==hook_info.get("pid", 0),
-                                    HookInfoDns.filename==hook_info.get("host", ""),
+                                    HookInfoDns.host==hook_info.get("host", ""),
                                     HookInfoDns.create_time==hook_info.get("create_time", 0)
                                     ).first()
         db.session.close()

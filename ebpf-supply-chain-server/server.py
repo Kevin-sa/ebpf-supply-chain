@@ -97,7 +97,7 @@ def dns_hook_info_record():
     data = request.get_json()
     print(data)
     comm_black_list = ["NetworkManager", "node"]
-    hsot_black_list = ["127.0.0.1", "172.17.0.1"]
+    hsot_black_list = ["127.0.0.1", "172.17.0.1", "pypi.org", "pypi.tuna.tsinghua.edu.cn", "files.pythonhosted.org", "mirrors.cloud.tencent.com"]
     if  data.get("package", "") != "" and data.get("comm") not in comm_black_list and data.get("host") not in hsot_black_list:
         hook_info_mapper.HookInfoDns().insert(data)
         HookInfoCache().dns_hook_info_cache(data)

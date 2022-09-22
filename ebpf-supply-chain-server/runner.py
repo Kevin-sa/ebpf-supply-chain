@@ -1,3 +1,4 @@
+import imp
 import threading
 import time
 from database.cache.hook_info_cache import HookInfoCache
@@ -7,6 +8,7 @@ from rule.socket_black_port_rule import ScoketBlackPortRule
 from rule.socket_address_rare_rule import ScoketAddressRareRule
 from rule.sys_open_file_black_rule import SysOpenFileBlackRule
 from rule.exec_black_rule import ExecBlackRule
+from rule.dns_black_rule import DnsBlackRule
 
 def main():
     """
@@ -15,7 +17,8 @@ def main():
     todo: thread_pool 处理
     """
     # thread_pool = ThreadPoolExecutor(10)
-    rule_service = [ScoketBlackAddressRule, ScoketBlackPortRule, ScoketAddressRareRule, ExecBlackRule, SysOpenFileBlackRule]
+    rule_service = [ScoketBlackAddressRule, ScoketBlackPortRule, ScoketAddressRareRule, ExecBlackRule, SysOpenFileBlackRule,
+                    DnsBlackRule]
 
     hook_info_cache = HookInfoCache()
 
