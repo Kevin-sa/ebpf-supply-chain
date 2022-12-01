@@ -79,7 +79,7 @@ def sys_exec_hook_info_record():
     comm_black_list = ["node"]
     filename_pattern = "vscode-server"
     if not re.search(filename_pattern, data.get("filename", "")) and data.get("package", "") != "" and data.get("comm") not in comm_black_list:
-        hook_info_mapper.HookInfoSysExec().insert(data)
+        # hook_info_mapper.HookInfoSysExec().insert(data)
         HookInfoCache().sys_exec_hook_info_cache(data)
 
     return {

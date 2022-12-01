@@ -16,7 +16,7 @@ class DnsBlackRule(RuleExecute):
         self.target_hook_info_type = "DNS"
         self.rule_name = "dns_black_rule"
         self.score = 100
-        self.dns_hook_black_pattern = re.compile(".lol.0day-security.com")
+        self.dns_hook_black_pattern = re.compile("")
 
     def do_business(self, package_name: str) -> None:
         try:
@@ -27,7 +27,7 @@ class DnsBlackRule(RuleExecute):
                 return
             self.logger.info(f"{self.rule_name} packag:{package_name} result size:{len(results)}")
             for result in results:
-                if self.__dns_host_black_list(result):
+                if self.__dns_host_black_list(result) is True:
                     self.logger.info(f"{self.rule_name} packag:{package_name} hit rule")
                     if evil_result_mapper.EvilResult().query_count_by_hash(get_md5(data=json.dumps(result))) > 0:
                         continue
@@ -40,11 +40,9 @@ class DnsBlackRule(RuleExecute):
 
     def __dns_host_black_list(self, result: dict) -> bool:
         if result.get("comm", None) is None or result.get("host", None) is None:
-                return False
+            return False
         host = result.get("host", "")
-        if self.dns_hook_black_pattern.search(result.get("host", "")):
-            return True
-        return False
+        return True
 
     def transform(self, data: dict, result_id: int) -> dict:
         return {
