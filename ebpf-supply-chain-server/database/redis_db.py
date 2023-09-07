@@ -136,13 +136,32 @@ class Redis(object):
             logging.error(f"zset_range_by_source error:{e}")
         return result
 
-
     @redis_wrapper
     def z_rem_range_by_score(self, key: str, min_score: int, max_score: int) -> None:
         try:
             self.redis.zremrangebyscore(name=key, min=min_score, max=max_score)
         except Exception as e:
             logging.error(f"z_rem_range_by_lex error:{e}")
+
+    @redis_wrapper
+    def llen(self, key: str) -> int:
+        try:
+            return self.redis.llen(name=key)
+        except Exception as e:
+            logging.error(f"z_rem_range_by_lex error:{e}")
+
+
+    @redis_wrapper
+    def lrange(self, key: str, start: int, end: int) -> list:
+        result = []
+        try:
+            cache_results = self.redis.lrange(name=key, start=start, end=end)
+            for cache_result in cache_results:
+                if cache_result != "":
+                    result.append(cache_result.decode("utf-8"))
+        except Exception as e:
+            logging.error(f"lrange error:{e}")
+        return result
 
 if __name__ == "__main__":
     print(Redis().get_key_value("SIMPLE:TASK:SET"))
