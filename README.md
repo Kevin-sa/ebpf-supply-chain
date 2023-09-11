@@ -227,7 +227,7 @@ if sys.platform == 'darwin':
 ### 4.2 报名混淆相似度检出
 看到[Beyond Typosquatting, An In-depth Look at
 Package Confusion
-](https://www.usenix.org/system/files/sec23_slides_neupane.pdf) 其中提到13中容易混淆导致误用package的情况，故是否可以利用当前已检出的packagename、全量package做样本判断是否是恶意包，用来做辅助分析。
+](https://www.usenix.org/system/files/sec23_slides_neupane.pdf) 其中提到13中容易混淆导致误用package的情况，故是否可以利用当前已检出的packagename、全量package做样本判断是否是恶意包，用来做辅助分析。当前已给出的恶意package请参考```/small_sample/package`.json```
 
 ### 4.3 dns hook
 通过hook```getaddrinfo```函数可以获取通过curl/wget等方式的dns查询，但是无法获取nslook不通过getaddrinfo函数的数据
