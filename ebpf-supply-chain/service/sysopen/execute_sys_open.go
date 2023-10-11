@@ -16,13 +16,15 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
-	"github.com/kevinsa/ebpf-supply-chain/utils"
+
+	"github.com/Kevin-sa/ebpf-supply-chain/agent/utils"
 	"github.com/cilium/ebpf/link"
 	"github.com/cilium/ebpf/ringbuf"
 	"github.com/cilium/ebpf/rlimit"
 )
 
 // $BPF_CLANG and $BPF_CFLAGS are set by the Makefile.
+//
 //go:generate go run github.com/cilium/ebpf/cmd/bpf2go -cc $BPF_CLANG -cflags $BPF_CFLAGS --target=amd64 -type event bpf kprobe.c -- -I./headers
 const mapKey uint32 = 0
 
@@ -95,7 +97,6 @@ func Execute() {
 			log.Printf("parsing ringbuf event: %s", err)
 			continue
 		}
-		
 
 		utils.PostSysOpenHookInfo(utils.CommBytes2S(event.Comm), utils.FilenameBytes2S(event.Filename), event.Pid)
 		// log.Printf("%-16s - %6d - %16s",
@@ -105,4 +106,3 @@ func Execute() {
 		// )
 	}
 }
-
