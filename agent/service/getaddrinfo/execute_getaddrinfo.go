@@ -16,7 +16,6 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/Kevin-sa/ebpf-supply-chain/agent/utils"
 	"github.com/cilium/ebpf/link"
 	"github.com/cilium/ebpf/perf"
 	"github.com/cilium/ebpf/rlimit"
@@ -110,7 +109,7 @@ func Execute() {
 			log.Printf("parsing perf event: %s", err)
 			continue
 		}
-		utils.PostDnsHookInfo(utils.CommBytes2S(event.Comm), utils.B2SHost(event.Host), event.Pid)
-		// log.Printf("%s:%s return value:%d -  %16s - %80s", binPath, symbol, event.Pid, event.Comm, event.Host)
+		// utils.PostDnsHookInfo(utils.CommBytes2S(event.Comm), utils.B2SHost(event.Host), event.Pid)
+		log.Printf("%s:%s return value:%d -  %16s - %80s : %d", binPath, symbol, event.Pid, event.Comm, event.Host, event.CgId)
 	}
 }

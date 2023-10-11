@@ -1,13 +1,11 @@
 package biz
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os/exec"
-	"time"
 
 	"github.com/Kevin-sa/ebpf-supply-chain/agent/global"
 )
@@ -31,16 +29,17 @@ func Execute() {
 	 * 执行安装命令，安装完成获取
 	 */
 	for true {
-		var command string
-		taskpypi := getTaskPypi()
-		osEnv(taskpypi.Data.Package, taskpypi.Data.Version)
-		if taskpypi.Data.Package != "" && taskpypi.Data.Version != "" {
-			command = "python3 -m pip install " + "-i " + taskpypi.Data.Mirror + " " + taskpypi.Data.Package + "==" + taskpypi.Data.Version + " --trusted-host " + taskpypi.Data.Host
-			log.Printf("common:%s", command)
-			installPackage(command)
-			log.Printf("package:%s version:%s installed\n", taskpypi.Data.Package, taskpypi.Data.Version)
-		}
-		time.Sleep(time.Duration(5) * time.Second)
+		getTaskPypi()
+		// var command string
+		// taskpypi := getTaskPypi()
+		// osEnv(taskpypi.Data.Package, taskpypi.Data.Version)
+		// if taskpypi.Data.Package != "" && taskpypi.Data.Version != "" {
+		// 	command = "python3 -m pip install " + "-i " + taskpypi.Data.Mirror + " " + taskpypi.Data.Package + "==" + taskpypi.Data.Version + " --trusted-host " + taskpypi.Data.Host
+		// 	log.Printf("common:%s", command)
+		// 	installPackage(command)
+		// 	log.Printf("package:%s version:%s installed\n", taskpypi.Data.Package, taskpypi.Data.Version)
+		// }
+		// time.Sleep(time.Duration(5) * time.Second)
 	}
 
 }
@@ -84,21 +83,22 @@ func installPackage(command string) {
 }
 
 func getTaskPypi() TaskPypi {
-	resp, err := http.Get("http://172.17.0.1:8080/task/pypi")
-	if err != nil {
-		log.Fatal(err)
-	}
+	// resp, err := http.Get("http://127.0.0.1:8081/task/pypi")
+	http.Get("http://127.0.0.1:8081/task/pypi")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
+	// defer resp.Body.Close()
+	// body, err := ioutil.ReadAll(resp.Body)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
 	var taskPypi TaskPypi
-	err = json.Unmarshal(body, &taskPypi)
-	if err != nil {
-		log.Fatal(err)
-	}
+	// err = json.Unmarshal(body, &taskPypi)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 	return taskPypi
 }

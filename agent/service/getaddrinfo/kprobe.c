@@ -11,6 +11,7 @@ struct event {
     u32 pid;
     u8 comm[16];
     u8 host[80];
+    u64 cg_id;
 };
 
 
@@ -36,6 +37,7 @@ int getaddrinfo_return(struct pt_regs *ctx)
                        (void *)PT_REGS_PARM1(ctx));
     bpf_get_current_comm(&event.comm, 16);
     event.pid = pid;
+    event.cg_id = bpf_get_current_cgroup_id();
     bpf_perf_event_output(ctx, &events, BPF_F_CURRENT_CPU, &event, sizeof(event));
 
     return 0;

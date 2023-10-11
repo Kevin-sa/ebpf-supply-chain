@@ -14,5 +14,5 @@ func (this *SocketProbe) Start() error {
 func init() {
 	mod := &SocketProbe{}
 	mod.name = "SocketProbe"
-	Register(mod)
+	// Register(mod)
 }
