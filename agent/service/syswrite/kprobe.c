@@ -22,6 +22,7 @@ struct event {
 	u64 ts;
     u8 filename[100];
 	u8 comm[30];
+    u64 cg_id;
 };
 
 
@@ -56,8 +57,10 @@ int kprobe_ksys_write(struct pt_regs *ctx) {
     char *filename = (char *)PT_REGS_PARM2(ctx);
 
     bpf_probe_read(&task_info->filename, sizeof(task_info->filename), filename);
-    // bpf_perf_event_output(ctx, &kprobe_map, BPF_F_CURRENT_CPU, &event, sizeof(event));
 	bpf_get_current_comm(&task_info->comm, 30);
+
+	task_info->cg_id = bpf_get_current_cgroup_id();
+
 	bpf_ringbuf_submit(task_info, 0);
     return 0;
 }

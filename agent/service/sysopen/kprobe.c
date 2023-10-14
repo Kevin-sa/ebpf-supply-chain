@@ -11,8 +11,8 @@ struct event
 {
     u32 pid;
     u8 comm[16];
-    // char filename;
     u8 filename[100];
+    u64 cg_id;
 };
 
 
@@ -44,6 +44,9 @@ int kprobe_do_sys_openat2(struct pt_regs *ctx)
 
     task_info->pid = tgid;
     bpf_get_current_comm(&task_info->comm, 16);
+
+    task_info->cg_id = bpf_get_current_cgroup_id();
+    
     bpf_ringbuf_submit(task_info, 0);
 
     return 0; 

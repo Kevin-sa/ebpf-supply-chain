@@ -25,7 +25,7 @@ import (
 
 // $BPF_CLANG and $BPF_CFLAGS are set by the Makefile.
 //
-//go:generate go run github.com/cilium/ebpf/cmd/bpf2go -cc $BPF_CLANG -cflags $BPF_CFLAGS --target=amd64 -type event bpf kprobe.c -- -I./headers
+//go:generate go run github.com/cilium/ebpf/cmd/bpf2go -cc $BPF_CLANG -cflags $BPF_CFLAGS --target=amd64 -type event bpf kprobe.c -- -I../headers
 const mapKey uint32 = 0
 
 func Execute() {
@@ -100,11 +100,13 @@ func Execute() {
 			continue
 		}
 
-		utils.PostSysExecHookInfo(utils.CommBytes2S(event.Comm), utils.ExecFilenameBytes2S(event.Filename), event.Pid)
-		// log.Printf("%-16s-%6d-%s",
-		// 	event.Comm,
-		// 	event.Pid,
-		// 	B2SFilename(event.Filename),
-		// )
+		if utils.CgroupIdFilter(event.CgId, utils.CommBytes2S(event.Comm)) {
+			utils.PostSysExecHookInfo(utils.CommBytes2S(event.Comm), utils.ExecFilenameBytes2S(event.Filename), event.Pid)
+			log.Printf("%-16s-%6d-%s",
+				event.Comm,
+				event.Pid,
+				utils.ExecFilenameBytes2S(event.Filename),
+			)
+		}
 	}
 }

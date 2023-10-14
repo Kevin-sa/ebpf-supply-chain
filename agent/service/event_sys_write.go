@@ -14,5 +14,5 @@ func (this *SysWriteProbe) Start() error {
 func init() {
 	mod := &SysWriteProbe{}
 	mod.name = "SysWriteProbe"
-	// Register(mod)
+	Register(mod)
 }

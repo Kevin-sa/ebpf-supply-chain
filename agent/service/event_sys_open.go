@@ -14,5 +14,5 @@ func (this *SysopenProbe) Start() error {
 func init() {
 	mod := &SysopenProbe{}
 	mod.name = "SysopenProbe"
-	// Register(mod)
+	Register(mod)
 }

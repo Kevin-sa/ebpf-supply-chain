@@ -27,7 +27,6 @@ import (
 	"syscall"
 
 	"github.com/Kevin-sa/ebpf-supply-chain/agent/utils"
-
 	"github.com/cilium/ebpf/link"
 	"github.com/cilium/ebpf/ringbuf"
 	"github.com/cilium/ebpf/rlimit"
@@ -92,18 +91,17 @@ func Execute() {
 			log.Printf("parsing ringbuf event: %s", err)
 			continue
 		}
-		if intToIP(event.Daddr).String() == "172.17.0.1" {
-			continue
+		if utils.CgroupIdFilter(event.CgId, utils.CommBytes2S(event.Comm)) {
+			utils.PostHookInfo(utils.CommBytes2S(event.Comm), intToIP(event.Daddr).String(), event.Dport)
+			// log.Printf(" %-16s %-15s %-6d -> %-15s %-6d : %d",
+			// 	event.Comm,
+			// 	intToIP(event.Saddr),
+			// 	event.Sport,
+			// 	intToIP(event.Daddr),
+			// 	event.Dport,
+			// 	event.CgId,
+			// )
 		}
-		utils.PostHookInfo(utils.CommBytes2S(event.Comm), intToIP(event.Daddr).String(), event.Dport)
-		// log.Printf("%-16s %-15s %-6d -> %-15s %-6d : %d",
-		// 	event.Comm,
-		// 	intToIP(event.Saddr),
-		// 	event.Sport,
-		// 	intToIP(event.Daddr),
-		// 	event.Dport,
-		// 	event.State,
-		// )
 	}
 }
 
@@ -113,14 +111,3 @@ func intToIP(ipNum uint32) net.IP {
 	binary.BigEndian.PutUint32(ip, ipNum)
 	return ip
 }
-
-// func commBytes2S(bs [16]uint8) string {
-// 	ba := []byte{}
-// 	for _, b := range bs {
-// 		if b == 0 {
-// 			continue
-// 		}
-// 		ba = append(ba, byte(b))
-// 	}
-// 	return string(ba)
-// }

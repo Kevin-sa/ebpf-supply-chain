@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os/exec"
+	"time"
 
 	"github.com/Kevin-sa/ebpf-supply-chain/agent/global"
 )
@@ -45,14 +46,6 @@ func Execute() {
 }
 
 func osEnv(packageName string, packageVersion string) {
-	// if err := os.Setenv("PYPI_PACKAGE_NAME", packageName); err != nil {
-	// 	log.Fatal(err)
-	// }
-	// if err := os.Setenv("PYPI_PACKAGE_VERSION", packageVersion); err != nil {
-	// 	log.Fatal(err)
-	// }
-	// currentPackage := os.Getenv("PYPI_PACKAGE")
-	// fmt.Println(currentPackage)
 	global.GlobalPackageName = packageName
 	global.GlobalPackageVersion = packageVersion
 }
@@ -84,7 +77,9 @@ func installPackage(command string) {
 
 func getTaskPypi() TaskPypi {
 	// resp, err := http.Get("http://127.0.0.1:8081/task/pypi")
-	http.Get("http://127.0.0.1:8081/task/pypi")
+	http.Get("http://localhost:8081/task/pypi")
+	log.Println("getTaskPypi")
+	time.Sleep(5 * time.Second)
 	// if err != nil {
 	// 	log.Fatal(err)
 	// }

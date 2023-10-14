@@ -1,4 +1,4 @@
-// +build ignore
+//go:build ignore
 
 #include "common.h"
 
@@ -34,9 +34,13 @@ struct sock_common {
 			__be32 skc_rcv_saddr;
 		};
 	};
-	union {
-		// Padding out union skc_hash.
-		__u32 _;
+	// union {
+	// 	// Padding out union skc_hash.
+	// 	__u32 _;
+	// };
+	union  {
+		unsigned int	skc_hash;
+		__u16		skc_u16hashes[2];
 	};
 	union {
 		struct {
@@ -45,14 +49,14 @@ struct sock_common {
 		};
 	};
 	short unsigned int skc_family;
-	unsigned char skc_state;
 };
 
 /**
  * struct sock reflects the start of the kernel's struct sock.
  */
 struct sock {
-	struct sock_common __sk_common;
+	struct 		sock_common __sk_common;
+	int			sk_rx_dst_ifindex;
 };
 
 struct {
@@ -71,12 +75,13 @@ struct event {
 	__be16 dport;
 	__be32 saddr;
 	__be32 daddr;
-	char state;
+	u64 cg_id;
 };
 struct event *unused __attribute__((unused));
 
 SEC("fentry/tcp_connect")
 int BPF_PROG(tcp_connect, struct sock *sk) {
+	
 	if (sk->__sk_common.skc_family != AF_INET) {
 		return 0;
 	}
@@ -91,7 +96,7 @@ int BPF_PROG(tcp_connect, struct sock *sk) {
 	tcp_info->daddr = sk->__sk_common.skc_daddr;
 	tcp_info->dport = sk->__sk_common.skc_dport;
 	tcp_info->sport = bpf_htons(sk->__sk_common.skc_num);
-	tcp_info->state = sk->__sk_common.skc_state;
+	tcp_info->cg_id = bpf_get_current_cgroup_id();
 
 	bpf_get_current_comm(&tcp_info->comm, TASK_COMM_LEN);
 

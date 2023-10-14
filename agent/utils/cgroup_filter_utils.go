@@ -1,9 +1,12 @@
 package utils
 
-import "github.com/Kevin-sa/ebpf-supply-chain/agent/global"
+import (
+	"strings"
+
+	"github.com/Kevin-sa/ebpf-supply-chain/agent/global"
+)
 
 func CgroupIdFilter(hookCgroupId uint64, hookComm string) bool {
-
 	if global.CgroupId == 0 {
 		initCgroupId(hookCgroupId, hookComm)
 	}
@@ -15,7 +18,7 @@ func CgroupIdFilter(hookCgroupId uint64, hookComm string) bool {
 }
 
 func initCgroupId(hookCgroupId uint64, hookComm string) {
-	if hookComm == "ebpf-supply-chain" {
+	if strings.HasPrefix(hookComm, "ebpf-supply-cha") || hookComm == "ebpf-supply-cha" {
 		global.CgroupId = hookCgroupId
 	}
 }
