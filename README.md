@@ -1,4 +1,25 @@
-之前做pypi源恶意包监控的方案中使用import hook的方式，即在load_module的过程中做hook劫持，当时该方案存在一定的局限性比如python2中exec实际是statement。最近在学习ebpf故计算利用ebpf做更加通用（pypi、npm）的类似hids的方案，利用两个周末完成相关代码实现并做部分恶意包验证，一定效果的同时也发现预期的噪声过多等问题。
+之前做pypi源恶意包监控的方案中使用import hook的方式，即在load_module的过程中做hook劫持，当时该方案存在一定的局限性比如python2中exec实际是statement。最近在学习ebpf故利用ebpf做更加通用（pypi、npm）的类似hids的方案，利用两个周末完成相关代码实现并做部分恶意包验证，获取一定效果的同时也发现预期的噪声过多等问题，后续有时间会陆续对一些问题做修复/扩展。
+
+
+- [0x01 项目图](#0x01-项目图)
+  - [1.1 环境依赖](#11-环境依赖)
+  - [1.2 ebpf-supply-chain](#12-ebpf-supply-chain)
+  - [1.3 ebpf-supply-chain-server](#13-ebpf-supply-chain-server)
+- [0x02 ebpf](#0x02-ebpf)
+  - [hook sys\_open](#hook-sys_open)
+- [0x03 问题\&留坑](#0x03-问题留坑)
+  - [3.1 问题](#31-问题)
+  - [留坑](#留坑)
+- [0x04 feature](#0x04-feature)
+  - [4.1 特定OS恶意行为触发](#41-特定os恶意行为触发)
+  - [4.2 报名混淆相似度检出](#42-报名混淆相似度检出)
+  - [4.3 dns hook](#43-dns-hook)
+    - [google\_longrunning为例](#google_longrunning为例)
+- [参考1-效果](#参考1-效果)
+  - [175.24.100.2](#175241002)
+  - [talmalfu](#talmalfu)
+  - [101.32.99.28](#101329928)
+- [参考2](#参考2)
 
 ## 0x01 项目图
 ![](docs/2.png)
