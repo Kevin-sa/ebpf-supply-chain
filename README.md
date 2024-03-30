@@ -1,5 +1,6 @@
 之前做pypi源恶意包监控的方案中使用import hook的方式，即在load_module的过程中做hook劫持，当时该方案存在一定的局限性比如python2中exec实际是statement。最近在学习ebpf故利用ebpf做更加通用（pypi、npm）的类似hids的方案，利用两个周末完成相关代码实现并做部分恶意包验证，获取一定效果的同时也发现预期的噪声过多等问题，后续有时间会陆续对一些问题做修复/扩展。
 
+-[LLM识别测试](/docs/llm/llm-evil-package.md)
 
 - [0x01 项目图](#0x01-项目图)
   - [1.1 环境依赖](#11-环境依赖)
